@@ -115,7 +115,7 @@ count_triplets = (tokens)->
   # a three level map :
   #   token -> token -> token -> count
   triplet_counter = new DefaultDict (-> new DefaultDict (-> new Counter()))
-  for start in [0...tokens.length-2]
+  for start in [0...tokens.length-3]
       [tok1, tok2, tok3] = tokens[start...start+3]
       triplet_counter.get(tok1).get(tok2).inc(tok3)
   triplet_counter
@@ -135,7 +135,7 @@ class LanguageModel
     while w2 != "."
       [w1, w2] = [ w2, @trigrams.get(w1)[w2].draw() ]
       tokens.push w2
-    if 3 < tokens.length < 12
+    if 3 < tokens.length < 20
       tokens
     else
       @draw_tokens()
