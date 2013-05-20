@@ -1,10 +1,4 @@
 
-root = this
-if exports?
-  root = exports
-else
-  @bullshitator = {}
-  root = @bullshitator
 
 PUNCTUATION = /([\.,;!?])/g
 WHITESPACES = /\s+/
@@ -48,23 +42,30 @@ class Counter extends DefaultDict
 
 
 
+
+
 binary_search_aux = (arr, target, start, end)->
-    if arr[start] >= target
-        start
-    else if (end - start) == 1
-        end
-    else
-        middle = (start + end - (start+end) % 2) / 2
-        if arr[middle] >= target
-            binary_search_aux arr, target, start, middle
-        else
-            binary_search_aux arr, target, middle, end
+  if arr[start] >= target
+      start
+  else if (end - start) <= 1
+      end
+  else
+      middle = (start + end - (start+end) % 2) / 2
+      if arr[middle] >= target
+          binary_search_aux arr, target, start, middle
+      else
+          binary_search_aux arr, target, middle, end
 
 binary_search = (arr, target)->
   # Assuming that arr is sorted,
   # returns the smallest id, such that 
   # arr[id] >= target
   binary_search_aux arr, target, 0, arr.length
+
+
+
+
+
 
 
 class Distribution
@@ -139,19 +140,26 @@ class LanguageModel
     else
       @draw_tokens()
 
-  draw_sentence: ->
+  generate_sentence: ->
     # Returns a random sentence
     tokens = @draw_tokens()
     ( add_space(token) for token in tokens).join("").trim()
 
 
-  draw_text: (min_length)->
+  generate_text: (min_length)->
     # Returns a text of a length of around
     # min_length.
     text = ""
     while text.length < min_length
-      text += @draw_sentence() + " "
+      text += @generate_sentence() + " "
     text
+
+
+if exports?
+  root = exports
+else
+  @infatuate = {}
+  root = @infatuate
 
 root.learn =  (text)->
   # tokenize our text
@@ -170,16 +178,6 @@ root.learn =  (text)->
   bigrams = []
   for k1, word_counter of triplet_counter.get(".").c
     for k2, word_count of word_counter.c
-      if word_count > 2
-        bigrams.push [ [k1, k2], word_count ]
+      bigrams.push [ [k1, k2], word_count ]
   bigram_distribution = new Distribution bigrams
   new LanguageModel markov_model, bigram_distribution
-
-
-if process?.argv.length == 3
-  fs = require 'fs'
-  filepath = process.argv[2]
-  console.log filepath
-  text = fs.readFileSync filepath, {'encoding': 'utf-8'}
-  model = root.learn text
-  console.log model.draw_text 500
