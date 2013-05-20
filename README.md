@@ -2,6 +2,7 @@
 
 Give it a sample text and it will create arbitrarily long random text.
 It can be used as a library in the browser or in NodeJS, or as in command line using its cli.
+See [this blogspot](http://fulmicoton.com/posts/shannon-markov/) for more information.
 
 
 # Command line usage
