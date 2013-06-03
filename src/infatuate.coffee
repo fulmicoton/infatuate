@@ -20,7 +20,7 @@ class DefaultDict
     get: (k)->
       # if the key is not within the dictionary
       # automatically creates an entry.
-      if not @c[k]?
+      if not @c.hasOwnProperty(k)
           @c[k] = @default_value()
       @c[k]
 
